@@ -38,7 +38,7 @@ Embarked : a Port Name on Board C = Cherbourg, Q = Queenstown, S = Southhampton
 class UserService:
     def __init__(self):
         self.fileReader = FileReader()  
-        self.data = os.path.abspath("data")
+        self.data = os.path.abspath("com_dayoung_api/user/data")
         
         self.odf = None
 

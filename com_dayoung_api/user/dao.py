@@ -7,6 +7,10 @@ import json
 class UserDao(UserDto):
 
     @classmethod
+    def count(cls):
+        return cls.query.count()
+    
+    @classmethod
     def find_all(cls):
         sql = cls.query
         df = pd.read_sql(sql.statement, sql.session.bind)

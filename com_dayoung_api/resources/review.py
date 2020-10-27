@@ -1,3 +1,4 @@
+from typing import List
 from flask_restful import Resource, reqparse
 from flask import request
 import json
@@ -10,6 +11,7 @@ from pathlib import Path
 from com_dayoung_api.ext.db import db, openSession
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy import func
 # from com_dayoung_api.user.dto import UserDto
 # from com_dayoung_api.movie.dto import MovieDto
 
@@ -110,10 +112,16 @@ class ReviewService:
 service = UserService()
 service.hook()
 '''
-
+Session = openSession()
+session = Session()
+service = ReviewService()
 
            
 class ReviewDao(ReviewDto):
+    
+    @classmethod
+    def count(cls):
+        return cls.query.count()
     
     @classmethod
     def find_all(cls):
@@ -142,7 +150,7 @@ class ReviewDao(ReviewDto):
         session.commit()
     
     @staticmethod   
-    def bulk():
+    def insert_many():
         service = ReviewService()
         Session = openSession()
         session = Session()
@@ -217,7 +225,7 @@ class Reviews(Resource):
         data = ReviewDao.find_all()
         return data, 200
 # rd = ReviewDao()
-# rd.bulk_insert_mappings()
+# rd.bulk()
 
 
 # service = ReviewService()
