@@ -7,11 +7,12 @@ from com_dayoung_api.user.api import User, Users, Auth, Access
 from com_dayoung_api.item.api import Item, Items
 
 def initialize_routes(api):
-    print('========== 2 ==========')
+    
     api.add_resource(Home, '/api')
     api.add_resource(Movie, '/Movie/<string:id>')
     api.add_resource(Movies, '/Movies')
-    api.add_resource(Review, '/Review<string:id>')
+    print('========== 2 ==========')
+    api.add_resource(Review, '/api/review')
     api.add_resource(Reviews, '/api/reviews')
     api.add_resource(Actor, '/Actor<string:id>')
     api.add_resource(Actors, '/Actors')

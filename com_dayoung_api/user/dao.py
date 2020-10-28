@@ -4,6 +4,8 @@ from com_dayoung_api.user.dto import UserDto, UserVo
 import pandas as pd
 import json
 
+Session = openSession()
+session = Session()
 class UserDao(UserDto):
 
     @classmethod
@@ -21,8 +23,10 @@ class UserDao(UserDto):
         return cls.query.filer_by(name == name).all()
 
     @classmethod
-    def find_by_id(cls, userid):
-        return cls.query.filter_by(userid == userid).first()
+    def find_by_id(cls, user_id):
+        print('=======4=========')
+        print(user_id)
+        return session.query(UserDto).filter(UserDto.user_id.like(user_id)).one()
 
     @classmethod
     def login(cls, user):

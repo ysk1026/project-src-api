@@ -26,15 +26,21 @@ class User(Resource):
         for key in params.keys():
             params_str += 'key: {}, value: {}<br>'.format(key, params[key])
         return {'code':0, 'message': 'SUCCESS'}, 200
+
     @staticmethod
     def get(id):
-        print(f'User {id} added ')
+        print('==========3===========')
         try:
+            print('진입')
             user = UserDao.find_by_id(id)
+            print(type(user))
             if user:
+                print('성공!')
                 return user.json()
         except Exception as e:
             return {'message': 'User not found'}, 404
+        
+
 
     @staticmethod
     def update():

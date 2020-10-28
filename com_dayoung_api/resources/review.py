@@ -139,15 +139,17 @@ class ReviewDao(ReviewDto):
     
     @staticmethod
     def save(review):
+        print('진입')
+        print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
+            User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
         Session = openSession()
+        print('1 clear')
         session = Session()
-        newArticle = ReviewDto(title = review['title'],
-                                content = review['content'],
-                                user_id = review['user_id'],
-                                movie_id = review['movie_id'])
-        
-        session.add(newArticle)
+        print('2 clear')
+        session.add(review)
+        print('3 clear')
         session.commit()
+        print('4 clear')
     
     @staticmethod   
     def insert_many():
@@ -182,25 +184,30 @@ class ReviewDao(ReviewDto):
 # ==============================================================
 
 parser = reqparse.RequestParser()
-parser.add_argument('user_id', type =int, required =False, help ='This field cannot be left blank')
+parser.add_argument('user_id', type =str, required =False, help ='This field cannot be left blank')
 parser.add_argument('movie_id', type =int, required =False, help ='This field cannot be left blank')
 parser.add_argument('title', type =str, required =False, help ='This field cannot be left blank')
 parser.add_argument('content', type =str, required =False, help ='This field cannot be left blank')
+parser.add_argument('label', type =int, required =False, help ='This field cannot be left blank')
 
 class Review(Resource):
     
     @staticmethod
     def post():
-        args = parser.parge_args()
-        review = ReviewDto(args['title'], args['content'], \
-            args['user_id'], args['movie_id'])
-        
-        try:
-            ReviewDao.save(args)
-            return {'code' : 0, 'message' : 'SUCCESS'}, 200
+        # service = ReviewService()
+        args = parser.parse_args()
+        review = ReviewDto(args.title, args.content, 3, args.user_id, args.movie_id)
+        print('=======3======')
+        # print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
+        #     User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
+        # review = ReviewDao(args['title'], args['movie_id'], \
+        #     args['user_id'], args['content'])
+        try: 
+            ReviewDao.save(review)
+            return {'code' : 0, 'message' : 'SUCCESS'}, 200    
         except:
-            return {'message' : 'An error occured inserting the review'}, 500
-        
+            return {'message': 'An error occured inserting the article'}, 500
+
     def get(self, id):
         review = ReviewDao.find_by_id(id)
         if review:
@@ -224,6 +231,8 @@ class Reviews(Resource):
         print('========== 10 ==========')
         data = ReviewDao.find_all()
         return data, 200
+    
+
 # rd = ReviewDao()
 # rd.bulk()
 
