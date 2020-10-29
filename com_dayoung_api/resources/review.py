@@ -49,7 +49,6 @@ class ReviewDto(db.Model):
         return f'rev_id = {self.rev_id}, user_id = {self.user_id}, movie_id = {self.movie_id},\
             title = {self.title}, content = {self.content}, label = {self.label}'
     
-    @property
     def json(self):
         return {
             'rev_id' : self.rev_id,
@@ -223,6 +222,7 @@ class Review(Resource):
         review.save()
         return review.json()
     
+        
 class Reviews(Resource):
     def get(self):
         # return {'review' : list(map(lambda review: review.json(), ReviewDao.find_all()))}
