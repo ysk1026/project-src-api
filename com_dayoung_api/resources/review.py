@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import os
 from com_dayoung_api.utils.file_helper import FileReader
+from com_dayoung_api.resources.movie import MovieDto
 from pathlib import Path
 from com_dayoung_api.ext.db import db, openSession
 from sqlalchemy.orm import Session, sessionmaker
@@ -37,6 +38,8 @@ class ReviewDto(db.Model):
      
     user_id: str = db.Column(db.String(30)) # db.ForeignKey(UserDto.user_id
     movie_id: int = db.Column(db.Integer) # db.ForeignKey(MovieDto.movie_id)
+    
+    # movie = db.relationship('MovieDto', back_populates="reviews")
     
     def __init__(self, title, content, label, user_id, movie_id):
         self.title = title
@@ -81,9 +84,9 @@ class ReviewService:
         
     def hook(self):
         train = 'rating.csv'
+        movie = 'kmdb_csv.csv'
         this = self.fileReader
         this.train = self.new_model(train) # payload
-        
         df = pd.DataFrame(
             {
                 'user_id' : this.train.id,
@@ -94,7 +97,7 @@ class ReviewService:
             }
         )
         df = df.dropna()
-        df = df[:1000]
+        df = df[:50] # 데이터 불러올 갯수, 너무 많아지면 핸들링하기 힘드니 상황에 맞게 조절한다.
         print(df.head())
         
         return df
@@ -137,10 +140,11 @@ class ReviewDao(ReviewDto):
     def find_by_id(cls, id):
         print("FIND BY ID method 진입!")
         print(f'ID : {id}')
-        sql = session.query(ReviewDto).filter(ReviewDto.rev_id.like(id))
-        df = pd.read_sql(sql.statement, sql.session.bind)
-        return json.loads(df.to_json(orient='records'))
-        # return session.query(ReviewDto).filter(ReviewDto.rev_id.like(id))
+        # sql = session.query(ReviewDto).filter(ReviewDto.rev_id.like(id))
+        # df = pd.read_sql(sql.statement, sql.session.bind)
+        # return json.loads(df.to_json(orient='records'))
+
+        return session.query(ReviewDto).filter(ReviewDto.rev_id.like(id)).one()
         # return cls.query.filter_by(id == id).first()
     
     @staticmethod
@@ -156,6 +160,25 @@ class ReviewDao(ReviewDto):
         print('3 clear')
         session.commit()
         print('4 clear')
+    
+    @staticmethod
+    def update(review, id):
+        print('진입')
+        print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
+            User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
+        Session = openSession()
+        print('update 1 clear')
+        session = Session()
+        print('update 2 clear')
+        session.query(ReviewDto).filter(ReviewDto.rev_id == review.rev_id).update({ReviewDto.user_id:review.user_id,
+                                                                                   ReviewDto.movie_id:review.movie_id,
+                                                                                   ReviewDto.title:review.title,
+                                                                                   ReviewDto.content:review.content,
+                                                                                   ReviewDto.label:review.label
+                                                                                   })
+        print('update 3 clear')
+        session.commit()
+        print('update 4 clear')
     
     @staticmethod   
     def insert_many():
@@ -232,19 +255,31 @@ class Review(Resource):
         review = ReviewDao.find_by_id(id)
         print("Review 가져옴!")
         print(f'리뷰 정보: \n {review}')
-        return review
+        print(review.json())
+        return review.json()
         # if review:
         #     return review.json()
         # return {'message' : 'Article not found'}, 404
     
     def put(self, id):
-        data = Review.parser.parse_args()
+        print('PUT 진입')
+        args = parser.parse_args()
+        # review = ReviewVo()
+        print(args)
+        # review.title = args['title']
+        # review.content = args['content']
+        # print('타이틀', review.title)
+        # print('콘텐츠', review.content)
         review = ReviewDao.find_by_id(id)
-        
-        review.title = data['title']
-        review.content = data['content']
-        review.save()
-        return review.json()
+        review.title = args['title']
+        review.content = args['content']
+        print('리뷰', review)
+        print('리뷰 타입', type(review))
+        try: 
+            ReviewDao.update(review, id)
+            return {'code' : 0, 'message' : 'SUCCESS'}, 200    
+        except:
+            return {'message': 'An error occured inserting the article'}, 500
     
     def update(self, id):
         data = Review.parser.parse_args()

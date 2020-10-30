@@ -1,9 +1,10 @@
 from com_dayoung_api.home.api import Home
-from com_dayoung_api.movie.api import Movie, Movies
+# from com_dayoung_api.movie.api import Movie, Movies
 from flask import Blueprint
 from flask_restful import Api
 # from com_dayoung_api.review.api import Review, Reviews
 from com_dayoung_api.resources.review import Review, Reviews
+from com_dayoung_api.resources.movie import Movie, Movies
 from com_dayoung_api.actor.api import Actor, Actors
 from com_dayoung_api.user.api import User, Users, Auth, Access
 from com_dayoung_api.item.api import Item, Items
