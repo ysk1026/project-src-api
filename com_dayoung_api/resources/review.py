@@ -126,6 +126,7 @@ class ReviewDao(ReviewDto):
     def find_all(cls):
         sql = cls.query
         df = pd.read_sql(sql.statement, sql.session.bind)
+        # print(df)
         return json.loads(df.to_json(orient='records'))
     
     @classmethod
@@ -134,7 +135,13 @@ class ReviewDao(ReviewDto):
     
     @classmethod
     def find_by_id(cls, id):
-        return cls.query.filter_by(id == id).first()
+        print("FIND BY ID method 진입!")
+        print(f'ID : {id}')
+        sql = session.query(ReviewDto).filter(ReviewDto.rev_id.like(id))
+        df = pd.read_sql(sql.statement, sql.session.bind)
+        return json.loads(df.to_json(orient='records'))
+        # return session.query(ReviewDto).filter(ReviewDto.rev_id.like(id))
+        # return cls.query.filter_by(id == id).first()
     
     @staticmethod
     def save(review):
@@ -176,6 +183,18 @@ class ReviewDao(ReviewDto):
         session.delete(data)
         session.commit()
         
+    @staticmethod
+    def modify_review(review):
+        print('진입')
+        print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
+            User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
+        Session = openSession()
+        session = Session()
+        print('Success 1')
+        session.query(ReviewDto).filter(ReviewDto.rev_id == review['rev_id']).update(review)
+        session.commit()
+        print('movie data modify complete')
+        
 # ==============================================================
 # ==============================================================
 # ====================        API       ========================
@@ -208,10 +227,15 @@ class Review(Resource):
             return {'message': 'An error occured inserting the article'}, 500
 
     def get(self, id):
+        print("진입 성공!")
+        print(id)
         review = ReviewDao.find_by_id(id)
-        if review:
-            return review.json()
-        return {'message' : 'Article not found'}, 404
+        print("Review 가져옴!")
+        print(f'리뷰 정보: \n {review}')
+        return review
+        # if review:
+        #     return review.json()
+        # return {'message' : 'Article not found'}, 404
     
     def put(self, id):
         data = Review.parser.parse_args()
@@ -222,6 +246,16 @@ class Review(Resource):
         review.save()
         return review.json()
     
+    def update(self, id):
+        data = Review.parser.parse_args()
+        review = ReviewDao.find_by_id(id)
+        
+# class DelReview(Resource):
+     
+#      @staticmethod
+#      def post():
+#          args = parser.parse_args()
+#          review = ReviewDto(args.rev_id)
         
 class Reviews(Resource):
     def get(self):
