@@ -200,11 +200,11 @@ class ReviewDao(ReviewDto):
         
     @classmethod
     def delete(cls,rev_id):
-        Session = openSession()
-        session = Session()
+        print('##### movie data delete #####')
         data = cls.query.get(rev_id)
-        session.delete(data)
-        session.commit()
+        db.session.delete(data)
+        db.session.commit()
+        print('##### movie data delete complete #####')
         
     @staticmethod
     def modify_review(review):
@@ -314,3 +314,17 @@ class Reviews(Resource):
 # s.bulk_insert_mappings(ReviewDto, df.to_dict(orient="records"))
 # s.commit()
 # s.close()
+
+class ReviewDel(Resource):
+    
+    def post(self, id):
+        print('Delete 진입')
+        review = ReviewDao.find_by_id(id)
+        print('리뷰 아이디', review.rev_id)
+        print('전체 리뷰', review)
+        print('리뷰 타입', type(review))
+        try:
+            ReviewDao.delete(review.rev_id)
+            return{'code':0, 'message':'SUCCESS'}, 200
+        except:
+            return {'message':'An error occured registering the movie'}, 500

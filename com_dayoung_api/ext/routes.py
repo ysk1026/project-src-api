@@ -3,7 +3,7 @@ from com_dayoung_api.home.api import Home
 from flask import Blueprint
 from flask_restful import Api
 # from com_dayoung_api.review.api import Review, Reviews
-from com_dayoung_api.resources.review import Review, Reviews
+from com_dayoung_api.resources.review import Review, Reviews, ReviewDel
 from com_dayoung_api.resources.movie import Movie, Movies
 from com_dayoung_api.actor.api import Actor, Actors
 from com_dayoung_api.user.api import User, Users, Auth, Access
@@ -33,6 +33,7 @@ def initialize_routes(api):
     print('========== 2 ==========')
     api.add_resource(Review, '/api/review<string:id>')
     api.add_resource(Reviews, '/api/reviews')
+    api.add_resource(ReviewDel, '/api/delreview<string:id>')
     api.add_resource(Actor, '/Actor<string:id>')
     api.add_resource(Actors, '/Actors')
     api.add_resource(User, '/api/user/<string:id>')
