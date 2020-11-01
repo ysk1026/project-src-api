@@ -42,3 +42,16 @@ class FileReader:
 
     def json_load(self):
         return json.load(open(self.new_file(), encoding='UTF-8'))
+    
+class FileChecker:
+    def df_null_check(self, df):
+        columns_list = []
+        for i in df.columns:        # column list 만들기
+            columns_list.append(i)
+
+        print(columns_list)
+
+        for i in range(0, len(columns_list)):   # 각 column의 null값(= 비어 있는 값) 조회 & 프린트
+            aaa = df[columns_list[i]].isnull().sum(axis=0)
+            print(f'{columns_list[i]:25} : null count = {aaa:4}')
+        
