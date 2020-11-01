@@ -200,11 +200,13 @@ class ReviewDao(ReviewDto):
         
     @classmethod
     def delete(cls,rev_id):
-        print('##### movie data delete #####')
+        print('##### review data delete #####')
         data = cls.query.get(rev_id)
+        print(f'###### review data: {data}')
         db.session.delete(data)
+        print("Delete in progress")
         db.session.commit()
-        print('##### movie data delete complete #####')
+        print('##### review data delete complete #####')
         
     @staticmethod
     def modify_review(review):
@@ -255,7 +257,7 @@ class Review(Resource):
         review = ReviewDao.find_by_id(id)
         print("Review 가져옴!")
         print(f'리뷰 정보: \n {review}')
-        print(review.json())
+        # print(review.json())
         return review.json()
         # if review:
         #     return review.json()
