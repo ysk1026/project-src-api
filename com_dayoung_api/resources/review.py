@@ -147,6 +147,15 @@ class ReviewDao(ReviewDto):
         return session.query(ReviewDto).filter(ReviewDto.rev_id.like(id)).one()
         # return cls.query.filter_by(id == id).first()
     
+    @classmethod
+    def find_by_title(cls, title):
+        print("FIND BY TITLE 진입 !")
+        # sql = cls.query
+        # df = pd.read_sql(sql.statement, sql.session.bind)
+        # print(df)
+        # return json.loads(df.to_json(orient='records'))
+        return session.query(ReviewDto).filter(ReviewDto.title.like(title)).all()
+    
     @staticmethod
     def save(review):
         print('진입')
@@ -257,7 +266,8 @@ class Review(Resource):
         review = ReviewDao.find_by_id(id)
         print("Review 가져옴!")
         print(f'리뷰 정보: \n {review}')
-        # print(review.json())
+        print(f'리뷰 타입 {type(review)}')
+        print(f'제이슨 변환 이후: {review.json()}')
         return review.json()
         # if review:
         #     return review.json()
@@ -330,3 +340,22 @@ class ReviewDel(Resource):
             return{'code':0, 'message':'SUCCESS'}, 200
         except:
             return {'message':'An error occured registering the movie'}, 500
+
+# 리뷰 서치 기능 구현 클래스
+class ReviewSearch(Resource):
+    
+    def get(self, title):
+        print("SEARCH 진입")
+        print(f'타이틀 : {title}')
+        review = ReviewDao.find_by_title(title)
+        # review = {review[i]: review[i + 1] for i in range(0, len(review), 2)}
+        # review = json.dump(review)
+        reviewlist = []
+        # for review in reviews:
+            # reviewdic
+        for rev in review:
+            reviewlist.append(rev.json())
+        # print(f'Review type : {type(review[0])}')
+        print(f'Review List : {reviewlist}')
+        return reviewlist[:]
+    
