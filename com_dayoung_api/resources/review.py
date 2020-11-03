@@ -137,6 +137,7 @@ class ReviewDao(ReviewDto):
                 titledict[title[0]] += 1
             if title[1] == 1:
                 titledict[title[0]] += 1
+        titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
         return titledict
             
                 
@@ -282,7 +283,13 @@ class ReviewPost(Resource):
             return {'code' : 0, 'message' : 'SUCCESS'}, 200    
         except:
             return {'message': 'An error occured inserting the article'}, 500
-
+    
+    @staticmethod
+    def get():
+        print("진입")
+        top_movie = ReviewDao.group_by()
+        return top_movie
+    
 class Review(Resource):
 
     def get(self, id):
