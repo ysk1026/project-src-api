@@ -163,6 +163,13 @@ class ReviewDao(ReviewDto):
         # return cls.query.filter_by(id == id).first()
     
     @classmethod
+    def find_by_user_id(cls, user_id):
+        print("FIND BY USER ID METHOD 진입!")
+        print (session.query(ReviewDto).filter(ReviewDto.user_id.like(user_id)).all())
+        print ("성공")
+        return session.query(ReviewDto).filter(ReviewDto.user_id.like(user_id)).all()
+    
+    @classmethod
     def find_by_title(cls, title):
         print("FIND BY TITLE 진입 !")
         # sql = cls.query
@@ -377,3 +384,14 @@ class ReviewSearch(Resource):
         print(f'Review List : {reviewlist}')
         return reviewlist[:]
     
+# User ID에 해당하는 리뷰들 관리
+class ReviewByUser(Resource):
+    
+    def get(self, user_id):
+        print("마이 리뷰 찾기 진입!")
+        print(f"User ID : {user_id}의 리뷰들를 불러오는 중 . . .")
+        review = ReviewDao.find_by_user_id(user_id)
+        # 여기서 이제 review를 제이슨화 시킨후 보내주면 됨
+        print(f"{user_id}의 전체 리뷰: {review}")
+        # return review
+        

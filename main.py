@@ -27,6 +27,8 @@ with app.app_context():
     print("진입 1")
     review_count = ReviewDao.count()
     review_group_by = ReviewDao.group_by()
+    user_id = 7898805
+    review_user_by = ReviewDao.find_by_user_id(user_id)
     user_count = UserDao.count()
     movie_count = MovieDao.count()
     print("진입 2") 
@@ -37,6 +39,9 @@ with app.app_context():
         print(f'>>>>>>>>> Review Total Count is {review_count}')
     print('#' * 30)
     print(f'Review Group by : {review_group_by}')
+    print('#' * 30)
+    print('#' * 30)
+    print(f'Review of {user_id} : {review_user_by}')
     print('#' * 30)
     print(f'>>>>>>>>> User Total Count is {user_count}')
     if user_count == 0:
