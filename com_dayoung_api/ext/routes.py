@@ -3,7 +3,7 @@ from com_dayoung_api.home.api import Home
 from flask import Blueprint
 from flask_restful import Api
 # from com_dayoung_api.review.api import Review, Reviews
-from com_dayoung_api.resources.review import Review, Reviews, ReviewDel, ReviewSearch
+from com_dayoung_api.resources.review import Review, Reviews, ReviewPost, ReviewDel, ReviewSearch
 from com_dayoung_api.resources.movie import Movie, Movies
 from com_dayoung_api.actor.api import Actor, Actors
 from com_dayoung_api.user.api import User, Users, Auth, Access
@@ -15,9 +15,11 @@ users = Blueprint('users', __name__, url_prefix='/api/users')
 auth = Blueprint('auth', __name__, url_prefix='/api/auth')
 access = Blueprint('access', __name__, url_prefix='/api/access')
 review = Blueprint('review', __name__, url_prefix='/api/review')
-reviews = Blueprint('review', __name__, url_prefix='/api/reviews')
-reviewdel = Blueprint('review', __name__, url_prefix='/api/delreview')
-reviewsearch = Blueprint('review', __name__, url_prefix='/api/searchreview')
+reviewpost = Blueprint('reviewpost', __name__, url_prefix='/api/reviewpost')
+
+reviews = Blueprint('reviews', __name__, url_prefix='/api/reviews')
+reviewdel = Blueprint('delreview', __name__, url_prefix='/api/delreview')
+reviewsearch = Blueprint('searchreview', __name__, url_prefix='/api/searchreview')
 
 api = Api(home)
 api = Api(user)
@@ -35,6 +37,7 @@ def initialize_routes(api):
     api.add_resource(Movie, '/Movie/<string:id>')
     api.add_resource(Movies, '/Movies')
     print('========== 2 ==========')
+    api.add_resource(ReviewPost, '/api/reviewpost')
     api.add_resource(Review, '/api/review<string:id>')
     api.add_resource(Reviews, '/api/reviews')
     api.add_resource(ReviewDel, '/api/delreview<string:id>')

@@ -26,6 +26,7 @@ with app.app_context():
 with app.app_context():
     print("진입 1")
     review_count = ReviewDao.count()
+    review_group_by = ReviewDao.group_by()
     user_count = UserDao.count()
     movie_count = MovieDao.count()
     print("진입 2") 
@@ -34,6 +35,9 @@ with app.app_context():
     if review_count == 0:
         ReviewDao.insert_many()
         print(f'>>>>>>>>> Review Total Count is {review_count}')
+    print('#' * 30)
+    print(f'Review Group by : {review_group_by}')
+    print('#' * 30)
     print(f'>>>>>>>>> User Total Count is {user_count}')
     if user_count == 0:
         UserDao.insert_many()

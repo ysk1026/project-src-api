@@ -126,6 +126,21 @@ class ReviewDao(ReviewDto):
         return cls.query.count()
     
     @classmethod
+    def group_by(cls):
+        titledict = {}
+        titles = session.query(cls.title, cls.label).all() # 타이틀 뽑아 왔음
+        # return session.query(cls.title, cls.label).all() # 타이틀 뽑아 왔음
+        for title in titles:
+            if title[0] not in titledict:
+                titledict[title[0]] = 1
+            else:
+                titledict[title[0]] += 1
+            if title[1] == 1:
+                titledict[title[0]] += 1
+        return titledict
+            
+                
+    @classmethod
     def find_all(cls):
         sql = cls.query
         df = pd.read_sql(sql.statement, sql.session.bind)
@@ -242,13 +257,14 @@ parser.add_argument('title', type =str, required =False, help ='This field canno
 parser.add_argument('content', type =str, required =False, help ='This field cannot be left blank')
 parser.add_argument('label', type =int, required =False, help ='This field cannot be left blank')
 
-class Review(Resource):
+class ReviewPost(Resource):
     
     @staticmethod
     def post():
+        print('진입')
         # service = ReviewService()
         args = parser.parse_args()
-        review = ReviewDto(args.title, args.content, 3, args.user_id, args.movie_id)
+        review = ReviewDto(args.title, args.content, 1, args.user_id, args.movie_id)
         print('=======3======')
         # print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
         #     User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
@@ -259,6 +275,8 @@ class Review(Resource):
             return {'code' : 0, 'message' : 'SUCCESS'}, 200    
         except:
             return {'message': 'An error occured inserting the article'}, 500
+
+class Review(Resource):
 
     def get(self, id):
         print("진입 성공!")
