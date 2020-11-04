@@ -114,8 +114,7 @@ class ReviewService:
 service = UserService()
 service.hook()
 '''
-Session = openSession()
-session = Session()
+
 service = ReviewService()
 
            
@@ -127,6 +126,8 @@ class ReviewDao(ReviewDto):
     
     @classmethod
     def group_by(cls):
+        Session = openSession()
+        session = Session()
         titledict = {}
         titles = session.query(cls.title, cls.label).all() # 타이틀 뽑아 왔음
         # return session.query(cls.title, cls.label).all() # 타이틀 뽑아 왔음
@@ -154,6 +155,8 @@ class ReviewDao(ReviewDto):
     
     @classmethod
     def find_by_id(cls, id):
+        Session = openSession()
+        session = Session()
         print("FIND BY ID method 진입!")
         print(f'ID : {id}')
         # sql = session.query(ReviewDto).filter(ReviewDto.rev_id.like(id))
@@ -165,13 +168,17 @@ class ReviewDao(ReviewDto):
     
     @classmethod
     def find_by_user_id(cls, user_id):
+        Session = openSession()
+        session = Session()
         print("FIND BY USER ID METHOD 진입!")
-        print (session.query(ReviewDto).filter(ReviewDto.user_id.like(user_id)).all())
+        # print (session.query(ReviewDto).filter(ReviewDto.user_id.like(user_id)).all())
         print ("성공")
         return session.query(ReviewDto).filter(ReviewDto.user_id.like(user_id)).all()
     
     @classmethod
     def find_by_title(cls, title):
+        Session = openSession()
+        session = Session()
         print("FIND BY TITLE 진입 !")
         # sql = cls.query
         # df = pd.read_sql(sql.statement, sql.session.bind)
@@ -181,6 +188,8 @@ class ReviewDao(ReviewDto):
     
     @staticmethod
     def save(review):
+        Session = openSession()
+        session = Session()
         print('진입')
         print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
             User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
@@ -193,6 +202,8 @@ class ReviewDao(ReviewDto):
     
     @staticmethod
     def update(review, id):
+        Session = openSession()
+        session = Session()
         print('진입')
         print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
             User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
