@@ -184,23 +184,20 @@ class ReviewDao(ReviewDto):
         print('진입')
         print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
             User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
-        Session = openSession()
         print('1 clear')
-        session = Session()
-        print('2 clear')
         session.add(review)
-        print('3 clear')
+        print('2 clear')
         session.commit()
-        print('4 clear')
+        session.close()
+        print('3 clear')
     
     @staticmethod
     def update(review, id):
         print('진입')
         print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
             User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
-        Session = openSession()
         print('update 1 clear')
-        session = Session()
+        print(f'************ID : {id} **************** ')
         print('update 2 clear')
         session.query(ReviewDto).filter(ReviewDto.rev_id == review.rev_id).update({ReviewDto.user_id:review.user_id,
                                                                                    ReviewDto.movie_id:review.movie_id,
@@ -210,6 +207,7 @@ class ReviewDao(ReviewDto):
                                                                                    })
         print('update 3 clear')
         session.commit()
+        session.close()
         print('update 4 clear')
     
     @staticmethod   
@@ -233,11 +231,13 @@ class ReviewDao(ReviewDto):
     @classmethod
     def delete(cls,rev_id):
         print('##### review data delete #####')
+        print(rev_id)
         data = cls.query.get(rev_id)
         print(f'###### review data: {data}')
         db.session.delete(data)
         print("Delete in progress")
         db.session.commit()
+        # db.session.close()
         print('##### review data delete complete #####')
         
     @staticmethod
@@ -258,12 +258,12 @@ class ReviewDao(ReviewDto):
 # ==============================================================
 # ==============================================================
 
-parser = reqparse.RequestParser()
-parser.add_argument('user_id', type =str, required =False, help ='This field cannot be left blank')
-parser.add_argument('movie_id', type =int, required =False, help ='This field cannot be left blank')
-parser.add_argument('title', type =str, required =False, help ='This field cannot be left blank')
-parser.add_argument('content', type =str, required =False, help ='This field cannot be left blank')
-parser.add_argument('label', type =int, required =False, help ='This field cannot be left blank')
+# parser = reqparse.RequestParser()
+# parser.add_argument('user_id', type =str, required =False, help ='This field cannot be left blank')
+# parser.add_argument('movie_id', type =int, required =False, help ='This field cannot be left blank')
+# parser.add_argument('title', type =str, required =False, help ='This field cannot be left blank')
+# parser.add_argument('content', type =str, required =False, help ='This field cannot be left blank')
+# parser.add_argument('label', type =int, required =False, help ='This field cannot be left blank')
 
 class ReviewPost(Resource):
     
@@ -271,9 +271,19 @@ class ReviewPost(Resource):
     def post():
         print('진입')
         # service = ReviewService()
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type =str, required =False, help ='This field cannot be left blank')
+        parser.add_argument('movie_id', type =int, required =False, help ='This field cannot be left blank')
+        parser.add_argument('title', type =str, required =False, help ='This field cannot be left blank')
+        parser.add_argument('content', type =str, required =False, help ='This field cannot be left blank')
+        parser.add_argument('label', type =int, required =False, help ='This field cannot be left blank')
+
         args = parser.parse_args()
-        review = ReviewDto(args.title, args.content, 1, args.user_id, args.movie_id)
+
+        # review = ReviewDto(args.title, args.content, 1, args.user_id, args.movie_id)
+        review = ReviewDto(args.title, args.content, 1, "jason", args.movie_id)
         print('=======3======')
+ 
         # print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
         #     User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
         # review = ReviewDao(args['title'], args['movie_id'], \
@@ -297,9 +307,9 @@ class Review(Resource):
         print(id)
         review = ReviewDao.find_by_id(id)
         print("Review 가져옴!")
-        print(f'리뷰 정보: \n {review}')
-        print(f'리뷰 타입 {type(review)}')
-        print(f'제이슨 변환 이후: {review.json()}')
+        # print(f'리뷰 정보: \n {review}')
+        # print(f'리뷰 타입 {type(review)}')
+        # print(f'제이슨 변환 이후: {review.json()}')
         return review.json()
         # if review:
         #     return review.json()
@@ -307,16 +317,18 @@ class Review(Resource):
     
     def put(self, id):
         print('PUT 진입')
+        parser = reqparse.RequestParser()
+        parser.add_argument('title', type =str, required =False, help ='This field cannot be left blank')
+        parser.add_argument('content', type =str, required =False, help ='This field cannot be left blank')
+        
         args = parser.parse_args()
-        # review = ReviewVo()
         print(args)
-        # review.title = args['title']
-        # review.content = args['content']
-        # print('타이틀', review.title)
-        # print('콘텐츠', review.content)
         review = ReviewDao.find_by_id(id)
         review.title = args['title']
         review.content = args['content']
+        # review = ReviewDto(args)
+        # data = review.json()
+        # return data
         print('리뷰', review)
         print('리뷰 타입', type(review))
         try: 
@@ -325,9 +337,9 @@ class Review(Resource):
         except:
             return {'message': 'An error occured inserting the article'}, 500
     
-    def update(self, id):
-        data = Review.parser.parse_args()
-        review = ReviewDao.find_by_id(id)
+    # def update(self, id):
+    #     data = Review.parser.parse_args()
+    #     review = ReviewDao.find_by_id(id)
         
 # class DelReview(Resource):
      
@@ -361,9 +373,9 @@ class Reviews(Resource):
 
 class ReviewDel(Resource):
     
-    def post(self, id):
+    def post(self, rev_id):
         print('Delete 진입')
-        review = ReviewDao.find_by_id(id)
+        review = ReviewDao.find_by_id(rev_id)
         print('리뷰 아이디', review.rev_id)
         print('전체 리뷰', review)
         print('리뷰 타입', type(review))

@@ -43,7 +43,7 @@ def initialize_routes(api):
     api.add_resource(Review, '/api/review<string:id>')
     api.add_resource(Reviews, '/api/reviews')
     api.add_resource(ReviewByUser, '/api/reviewbyuser<string:user_id>')
-    api.add_resource(ReviewDel, '/api/delreview<string:id>')
+    api.add_resource(ReviewDel, '/api/delreview<string:rev_id>')
     api.add_resource(ReviewSearch, '/api/searchreview<string:title>')
     api.add_resource(Actor, '/Actor<string:id>')
     api.add_resource(Actors, '/Actors')
