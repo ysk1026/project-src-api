@@ -8,7 +8,7 @@ from com_dayoung_api.item.api import Item, Items
 # from com_dayoung_api.movie.api import Movie, Movies
 # from com_dayoung_api.review.api import Review, Reviews
 from com_dayoung_api.resources.review import Review, Reviews, ReviewDao
-from com_dayoung_api.resources.movie import MovieDao
+from com_dayoung_api.resources.movie import RecoMovieDao
 from com_dayoung_api.actor.api import Actor, Actors
 from com_dayoung_api.user.dao import UserDao
 
@@ -30,13 +30,13 @@ with app.app_context():
     # user_id = 8425305
     # review_user_by = ReviewDao.find_by_user_id(user_id)
     user_count = UserDao.count()
-    movie_count = MovieDao.count()
+    count_reco_movie = RecoMovieDao.count()
     print("진입 2") 
     # print(movie_count)
     print(f'>>>>>>>>> Review Total Count is {review_count}')
-    if review_count == 0:
-        ReviewDao.insert_many()
-        print(f'>>>>>>>>> Review Total Count is {review_count}')
+    # if review_count == 0:
+    #     ReviewDao.insert_many()
+        # print(f'>>>>>>>>> Review Total Count is {review_count}')
     # print('#' * 30)
     # print(f'Review Group by : {review_group_by}')
     # print('#' * 30)
@@ -47,9 +47,9 @@ with app.app_context():
     if user_count == 0:
         UserDao.insert_many()
         print(f'>>>>>>>>> User Total Count Now {user_count}')
-    print(f'>>>>>>>>> Movie Total Count is {movie_count}')
-    if movie_count == 0:
-        MovieDao.insert_many()
-        print(f'>>>>>>>>> User Total Count Now {user_count}')
+    print(f'>>>>>>>>> Movie Total Count is {count_reco_movie}')
+    if count_reco_movie == 0:
+        RecoMovieDao.bulk()
+        print(f'>>>>>>>>> User Total Count Now {count_reco_movie}')
 
 initialize_routes(api)

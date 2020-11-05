@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import os
 from com_dayoung_api.utils.file_helper import FileReader
-from com_dayoung_api.resources.movie import MovieDto
+from com_dayoung_api.resources.movie import RecoMovieDto, RecoMovieVo
 from pathlib import Path
 from com_dayoung_api.ext.db import db, openSession
 from sqlalchemy.orm import Session, sessionmaker
@@ -37,7 +37,7 @@ class ReviewDto(db.Model):
     label: int = db.Column(db.Integer)
      
     user_id: str = db.Column(db.String(30)) # db.ForeignKey(UserDto.user_id
-    movie_id: int = db.Column(db.Integer) # db.ForeignKey(MovieDto.movie_id)
+    movie_id: int = db.Column(db.Integer, db.ForeignKey(RecoMovieDto.movieid))
     
     # movie = db.relationship('MovieDto', back_populates="reviews")
     
@@ -176,14 +176,15 @@ class ReviewDao(ReviewDto):
         return session.query(ReviewDto).filter(ReviewDto.user_id.like(user_id)).all()
     
     @classmethod
-    def find_by_title(cls, title):
+    def find_by_movie_title(cls, title):
         Session = openSession()
         session = Session()
         print("FIND BY TITLE 진입 !")
         # sql = cls.query
         # df = pd.read_sql(sql.statement, sql.session.bind)
         # print(df)
-        # return json.loads(df.to_json(orient='records'))
+        # sql = cls.query
+        # return json.loads(df.to_json(orient=‘records’))
         return session.query(ReviewDto).filter(ReviewDto.title.like(title)).all()
     
     @staticmethod
@@ -402,7 +403,7 @@ class ReviewSearch(Resource):
     def get(self, title):
         print("SEARCH 진입")
         print(f'타이틀 : {title}')
-        review = ReviewDao.find_by_title(title)
+        review = ReviewDao.find_by_movie_title(title)
         # review = {review[i]: review[i + 1] for i in range(0, len(review), 2)}
         # review = json.dump(review)
         reviewlist = []
@@ -410,8 +411,8 @@ class ReviewSearch(Resource):
             # reviewdic
         for rev in review:
             reviewlist.append(rev.json())
-        # print(f'Review type : {type(review[0])}')
-        print(f'Review List : {reviewlist}')
+        # print(f’Review type : {type(review[0])}‘)
+        print(f'Review List: {reviewlist}')
         return reviewlist[:]
     
 # User ID에 해당하는 리뷰들 관리

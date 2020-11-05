@@ -4,7 +4,7 @@ from flask import Blueprint
 from flask_restful import Api
 # from com_dayoung_api.review.api import Review, Reviews
 from com_dayoung_api.resources.review import Review, Reviews, ReviewPost, ReviewByUser, ReviewDel, ReviewSearch
-from com_dayoung_api.resources.movie import Movie, Movies
+from com_dayoung_api.resources.movie import RecoMovie, RecoMovies, RecoMovieSearch
 from com_dayoung_api.actor.api import Actor, Actors
 from com_dayoung_api.user.api import User, Users, Auth, Access
 from com_dayoung_api.item.api import Item, Items
@@ -14,6 +14,9 @@ user = Blueprint('user', __name__, url_prefix='/api/user')
 users = Blueprint('users', __name__, url_prefix='/api/users')
 auth = Blueprint('auth', __name__, url_prefix='/api/auth')
 access = Blueprint('access', __name__, url_prefix='/api/access')
+recomovie = Blueprint('movie', __name__, url_prefix='/api/movie')
+recomovies = Blueprint('movies', __name__, url_prefix='/api/movies')
+recomoviesearch = Blueprint('moviesearch', __name__, url_prefix='/api/moviesearch')
 review = Blueprint('review', __name__, url_prefix='/api/review')
 reviewpost = Blueprint('reviewpost', __name__, url_prefix='/api/reviewpost')
 reviewbyuser = Blueprint('reviewbyuser', __name__, url_prefix='/api/reviewbyuser')
@@ -32,13 +35,17 @@ api = Api(reviewdel)
 api = Api(reviewbyuser)
 api = Api(reviewpost)
 api = Api(reviewsearch)
+api = Api(recomovie)
+api = Api(recomovies)
+api = Api(recomoviesearch)
 
 def initialize_routes(api):
     
     api.add_resource(Home, '/api')
-    api.add_resource(Movie, '/Movie/<string:id>')
-    api.add_resource(Movies, '/Movies')
     print('========== 2 ==========')
+    api.add_resource(RecoMovie, '/api/movie<string:id>')
+    api.add_resource(RecoMovies, '/api/movies')
+    api.add_resource(RecoMovieSearch, '/api/moviesearch<string:title>')
     api.add_resource(ReviewPost, '/api/reviewpost')
     api.add_resource(Review, '/api/review<string:id>')
     api.add_resource(Reviews, '/api/reviews')
