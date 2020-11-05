@@ -167,7 +167,7 @@ class ReviewDao(ReviewDto):
         # return cls.query.filter_by(id == id).first()
     
     @classmethod
-    def find_by_user_id(cls, user_id):
+    def find_review_by_user_id(cls, user_id):
         Session = openSession()
         session = Session()
         print("FIND BY USER ID METHOD 진입!")
@@ -232,12 +232,12 @@ class ReviewDao(ReviewDto):
         session.commit()
         session.close()
             
-    @staticmethod
-    def modify(review):
-        Session = openSession()
-        session = Session()
-        session.add(review)
-        session.commit()
+    # @staticmethod
+    # def modify(review):
+    #     Session = openSession()
+    #     session = Session()
+    #     session.add(review)
+    #     session.commit()
         
     @classmethod
     def delete(cls,rev_id):
@@ -251,17 +251,17 @@ class ReviewDao(ReviewDto):
         # db.session.close()
         print('##### review data delete complete #####')
         
-    @staticmethod
-    def modify_review(review):
-        print('진입')
-        print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
-            User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
-        Session = openSession()
-        session = Session()
-        print('Success 1')
-        session.query(ReviewDto).filter(ReviewDto.rev_id == review['rev_id']).update(review)
-        session.commit()
-        print('movie data modify complete')
+    # @staticmethod
+    # def modify_review(review):
+    #     print('진입')
+    #     print(f'Rev id : {review.rev_id} / Movie_id :{review.movie_id}/\
+    #         User_id: {review.user_id}/ Title: {review.title}/ Content: {review.content} / Label: {review.label}')
+    #     Session = openSession()
+    #     session = Session()
+    #     print('Success 1')
+    #     session.query(ReviewDto).filter(ReviewDto.rev_id == review['rev_id']).update(review)
+    #     session.commit()
+    #     print('movie data modify complete')
         
 # ==============================================================
 # ==============================================================
@@ -420,7 +420,7 @@ class ReviewByUser(Resource):
     def get(self, user_id):
         print("마이 리뷰 찾기 진입!")
         print(f"User ID : {user_id}의 리뷰들를 불러오는 중 . . .")
-        review = ReviewDao.find_by_user_id(user_id)
+        review = ReviewDao.find_review_by_user_id(user_id)
         # 여기서 이제 review를 제이슨화 시킨후 보내주면 됨
         reviewlist = []
         for rev in review:
