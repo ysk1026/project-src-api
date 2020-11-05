@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import os
 from com_dayoung_api.utils.file_helper import FileReader
-from com_dayoung_api.resources.movie import RecoMovieDto, RecoMovieVo
+from com_dayoung_api.resources.movie import RecoMovieDto, RecoMovieDao
 from pathlib import Path
 from com_dayoung_api.ext.db import db, openSession
 from sqlalchemy.orm import Session, sessionmaker
@@ -146,7 +146,14 @@ class ReviewDao(ReviewDto):
     def find_all(cls):
         sql = cls.query
         df = pd.read_sql(sql.statement, sql.session.bind)
-        # print(df)
+        df_movie_id = df['movie_id']
+        # print(df_movie_id[1])
+        print(len(df['movie_id']))
+        count = 0
+        for movie in df_movie_id:
+            df_movie_id[count] = RecoMovieDao.find_by_id(movie).title_kor 
+            # print(RecoMovieDao.find_by_id(movie).title_kor)
+            count += 1
         return json.loads(df.to_json(orient='records'))
     
     @classmethod
@@ -400,10 +407,10 @@ class ReviewDel(Resource):
 # 리뷰 서치 기능 구현 클래스
 class ReviewSearch(Resource):
     
-    def get(self, title):
+    def get(self, movie_title):
         print("SEARCH 진입")
-        print(f'타이틀 : {title}')
-        review = ReviewDao.find_by_movie_title(title)
+        print(f'제목 : {movie_title}')
+        review = ReviewDao.find_by_movie_title(movie_title)
         # review = {review[i]: review[i + 1] for i in range(0, len(review), 2)}
         # review = json.dump(review)
         reviewlist = []
